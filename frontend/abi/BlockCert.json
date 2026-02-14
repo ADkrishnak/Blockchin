@@ -1,0 +1,10 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "storeCertificate",
+      "type": "function"
+    }
+  ]
+}
+
