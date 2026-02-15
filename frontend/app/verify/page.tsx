@@ -8,88 +8,137 @@ import contractABI from "../../abi/BlockCert.json";
 export default function Verify() {
   const [file, setFile] = useState<File | null>(null);
   const [studentId, setStudentId] = useState("");
-  const [result, setResult] = useState("");
+  const [status, setStatus] = useState("");
+  const [verified, setVerified] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleVerify = async () => {
     if (!file || !studentId) {
-      setResult("Select a file and enter Student ID");
+      setStatus("Please select certificate file and enter Student ID.");
       return;
     }
 
-    setLoading(true);
-
     try {
-      // Hash the file
+      setLoading(true);
+      setVerified(null);
+      setStatus("Generating SHA-256 hash...");
+
       const arrayBuffer = await file.arrayBuffer();
       const wordArray = CryptoJS.lib.WordArray.create(arrayBuffer);
       const hash = CryptoJS.SHA256(wordArray).toString();
 
       if (!(window as any).ethereum) {
-        setResult("Install MetaMask");
+        setStatus("MetaMask not detected.");
         setLoading(false);
         return;
       }
 
       const provider = new ethers.BrowserProvider(window.ethereum);
+      const network = await provider.getNetwork();
+
+      if (network.chainId !== 31337n) {
+        setStatus("⚠️ Please switch to Hardhat Local (Chain ID 31337).");
+        setLoading(false);
+        return;
+      }
+
       const signer = await provider.getSigner();
 
-      const contractAddress = ethers.getAddress("0x5FbDB2315678afecb367f032d93F642f64180aa3");
+      const contractAddress = ethers.getAddress(
+        "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+      );
 
-      const contract = new ethers.Contract(contractAddress, (contractABI as any).abi, signer);
+      const contract = new ethers.Contract(
+        contractAddress,
+        (contractABI as any).abi,
+        signer
+      );
 
-      setResult("Checking blockchain...");
-      const isValid: boolean = await contract.verifyCertificate(studentId, hash);
+      setStatus("Querying blockchain record...");
+
+      const isValid: boolean = await contract.verifyCertificate(
+        studentId,
+        hash
+      );
+
+      setVerified(isValid);
 
       if (isValid) {
-        setResult("✅ Certificate Verified!");
+        setStatus("Blockchain record matched.");
       } else {
-        setResult("❌ Certificate Not Found or Invalid");
+        setStatus("No matching blockchain record found.");
       }
     } catch (err: any) {
       console.error(err);
-      setResult("❌ Error verifying certificate: " + err.message);
+      setStatus("Verification failed. Check console.");
+      setVerified(false);
     }
 
     setLoading(false);
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-green-600 to-emerald-700 flex items-center justify-center p-6">
-      <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-black">Verify Certificate</h2>
+    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 flex items-center justify-center px-6 text-white">
+
+      <div className="w-full max-w-xl bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-10 shadow-xl">
+
+        <h2 className="text-3xl font-bold text-center mb-3">
+          Verify Academic Credential
+        </h2>
+
+        <p className="text-gray-300 text-sm text-center mb-8">
+          Validate certificate authenticity using blockchain-stored cryptographic hash.
+        </p>
 
         <input
           type="text"
           placeholder="Student ID"
           value={studentId}
           onChange={(e) => setStudentId(e.target.value)}
-          className="mb-4 w-full border p-2 rounded text-black"
+          className="mb-4 w-full bg-white/10 border border-white/20 px-4 py-3 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
 
         <input
           type="file"
-          onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
-          className="mb-4 w-full border p-2 rounded text-black"
+          onChange={(e) =>
+            setFile(e.target.files ? e.target.files[0] : null)
+          }
+          className="mb-6 w-full bg-white/10 border border-white/20 px-4 py-3 rounded-lg text-gray-300"
         />
 
         <button
           onClick={handleVerify}
           disabled={loading}
-          className="bg-green-600 hover:bg-green-700 text-white w-full py-3 rounded-lg transition"
+          className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-3 rounded-xl font-semibold shadow-lg transition transform hover:scale-[1.02] disabled:opacity-50"
         >
-          {loading ? "Checking..." : "Verify Certificate"}
+          {loading ? "Verifying..." : "Verify on Blockchain"}
         </button>
 
-        {result && (
-          <div className="mt-6 p-4 bg-gray-100 rounded-lg text-center whitespace-pre-line text-black font-medium">
-            {result}
+        {status && (
+          <div className="mt-6 text-center text-sm text-gray-300">
+            {status}
           </div>
         )}
+
+        {verified !== null && (
+          <div
+            className={`mt-8 p-6 rounded-xl text-center font-bold text-lg border ${verified
+                ? "bg-green-500/10 text-green-400 border-green-500"
+                : "bg-red-500/10 text-red-400 border-red-500"
+              }`}
+          >
+            {verified
+              ? "VALID CERTIFICATE ✔"
+              : "INVALID OR TAMPERED CERTIFICATE ✖"}
+          </div>
+        )}
+
       </div>
     </main>
   );
 }
+
+
 
 
 

@@ -4,59 +4,92 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-indigo-600 to-blue-500 flex flex-col items-center justify-center text-center px-6">
+    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 text-white flex flex-col">
 
-      {/* Card */}
-      <div className="bg-white shadow-xl rounded-2xl p-10 max-w-xl w-full">
-
-        {/* Title */}
-        <h1 className="text-4xl font-extrabold text-gray-800 mb-2">
-          BlockCert
-        </h1>
-
-        <p className="text-gray-500 mb-8">
-          Secure Blockchain Certificate Verification
-        </p>
-
-        {/* Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
-          <Link href="/upload">
-            <button className="bg-indigo-600 hover:bg-indigo-700 transition text-white px-6 py-3 rounded-lg w-full">
-              Upload Certificate
-            </button>
-          </Link>
-
-          <Link href="/verify">
-            <button className="bg-green-600 hover:bg-green-700 transition text-white px-6 py-3 rounded-lg w-full">
-              Verify Certificate
-            </button>
-          </Link>
+      {/* NAVBAR */}
+      <header className="w-full backdrop-blur-md bg-white/5 border-b border-white/10">
+        <div className="max-w-7xl mx-auto flex justify-between items-center px-8 py-5">
+          <h1 className="text-2xl font-bold tracking-widest text-indigo-400">
+            BLOCKCERT
+          </h1>
+          <p className="text-sm text-gray-300 hidden md:block">
+            Blockchain Academic Credential Verification
+          </p>
         </div>
+      </header>
 
-        {/* Flow Section */}
-        <div className="bg-gray-50 p-6 rounded-xl">
-          <h2 className="font-semibold text-lg mb-4 text-gray-700">
-            How It Works
+      {/* HERO */}
+      <section className="flex flex-1 items-center justify-center px-6 text-center">
+        <div className="max-w-5xl">
+
+          <h2 className="text-5xl md:text-6xl font-extrabold leading-tight mb-8">
+            Trust Through
+            <span className="text-indigo-400"> Cryptographic Proof</span>
           </h2>
 
-          <div className="space-y-3 text-gray-600">
-            <p>University uploads certificate</p>
-            <p>File converted to SHA256 hash</p>
-            <p>Hash stored on blockchain</p>
-            <p>Employer verifies certificate</p>
+          <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+            BlockCert secures academic certificates using SHA-256 hashing and blockchain
+            immutability, enabling instant verification without relying on centralized authorities.
+          </p>
 
-            <p className="font-semibold text-green-600 text-lg mt-3">
-              Real &nbsp;&nbsp; Fake
-            </p>
+          {/* CTA */}
+          <div className="flex flex-col sm:flex-row justify-center gap-6 mb-20">
+            <Link href="/upload">
+              <button className="px-10 py-4 bg-indigo-500 hover:bg-indigo-600 rounded-xl font-semibold shadow-lg hover:shadow-indigo-500/40 transition-all duration-300 w-full sm:w-auto">
+                Issue Certificate
+              </button>
+            </Link>
+
+            <Link href="/verify">
+              <button className="px-10 py-4 border border-green-400 text-green-400 hover:bg-green-400 hover:text-black rounded-xl font-semibold transition-all duration-300 w-full sm:w-auto">
+                Verify Credential
+              </button>
+            </Link>
+          </div>
+
+          {/* FEATURE GRID */}
+          <div className="grid md:grid-cols-3 gap-8">
+
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-2xl hover:border-indigo-400 transition">
+              <h3 className="text-indigo-400 font-semibold mb-3 text-lg">
+                Cryptographic Security
+              </h3>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                Certificates are hashed using SHA-256 before being recorded,
+                ensuring tamper detection at the byte level.
+              </p>
+            </div>
+
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-2xl hover:border-indigo-400 transition">
+              <h3 className="text-indigo-400 font-semibold mb-3 text-lg">
+                Decentralized Storage
+              </h3>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                Hash records are stored on Ethereum-compatible blockchain networks,
+                preventing unauthorized modification.
+              </p>
+            </div>
+
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-2xl hover:border-indigo-400 transition">
+              <h3 className="text-indigo-400 font-semibold mb-3 text-lg">
+                Instant Verification
+              </h3>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                Employers validate credentials within seconds without contacting
+                issuing institutions.
+              </p>
+            </div>
+
           </div>
         </div>
+      </section>
 
-      </div>
-
-      {/* Footer */}
-      <p className="text-white text-sm mt-6 opacity-80"> 
-      </p>
-
+      {/* FOOTER */}
+      <footer className="border-t border-white/10 py-6 text-center text-gray-400 text-sm">
+        © 2026 BlockCert • Built for Transparent Academic Trust
+      </footer>
     </main>
   );
 }
+
+
